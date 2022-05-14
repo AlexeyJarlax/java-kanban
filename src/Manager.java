@@ -4,6 +4,7 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Manager { // класс для объекта менеджер
     private int id; //хранение задач для Задач, Подзадач и Эпиков:
@@ -34,8 +35,8 @@ public class Manager { // класс для объекта менеджер
         return tasks.getOrDefault(id, null);
     }
 
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public List<Task> getTasksList() {
+        return new ArrayList<>(tasks.values());
     }
 
     // метод для удаления
@@ -52,7 +53,7 @@ public class Manager { // класс для объекта менеджер
     //Эпики пошли
     public void addEpic(Epic epic) {
         epic.setId(++id);
-        epic.setStatus("Новая");
+        epic.setStatus("NEW");
         epics.put(id, epic);
     }
 
@@ -126,7 +127,7 @@ public class Manager { // класс для объекта менеджер
         }
         subtasks.clear();
         for (Epic epic : epicsForStatusUpdate) {
-            epic.setStatus("Новая");
+            epic.setStatus("NEW");
         }
     }
 
@@ -134,7 +135,7 @@ public class Manager { // класс для объекта менеджер
     private void checkEpicStatus(Epic epic) {
 
         if (epic.getEpicSubtasks().size() == 0) {
-            epic.setStatus("Новая");
+            epic.setStatus("NEW");
             return;
         }
 
@@ -143,20 +144,20 @@ public class Manager { // класс для объекта менеджер
 
         for (Integer epicSubtaskId : epic.getEpicSubtasks()) {
             String status = subtasks.get(epicSubtaskId).getStatus();
-            if (!status.equals("Новая")) {
+            if (!status.equals("NEW")) {
                 allTaskIsNew = false;
             }
-            if (!status.equals("Выполнено!")) {
+            if (!status.equals("DONE")) {
                 allTaskIsDone = false;
             }
         }
 
         if (allTaskIsDone) {
-            epic.setStatus("Выполнено!");
+            epic.setStatus("DONE");
         } else if (allTaskIsNew) {
-            epic.setStatus("Новая");
+            epic.setStatus("NEW");
         } else {
-            epic.setStatus("В процессе выполнения...");
+            epic.setStatus("IN_PROGRESS");
         }
 
     }
