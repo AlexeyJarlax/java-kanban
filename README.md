@@ -1,3 +1,4 @@
 #  java-sprint3-hw-kanban
 Repository for homework project.
-Комиит №1
+Комиит №2
+Внесены все исправления, в соответствии с замечаниями.
