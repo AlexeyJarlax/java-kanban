@@ -1,10 +1,7 @@
 package tasks;
 
 public class Subtask extends Task {
-    private Epic id;
-    // Поменял на ID. А если в следующем ТЗ мне от эпика понадобится извлечь что-то иное, кроме АйДи то нужно будет
-    // возвращаться обратно к объекту эпик?
-
+    private Epic id; // Реализация через ID
 
     public Subtask(String title, String description, String status) {
         super(title, description, status);
