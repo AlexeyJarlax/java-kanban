@@ -1,6 +1,7 @@
 package managers;
 
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
@@ -66,7 +67,7 @@ public class InMemoryTaskManager implements TaskManager { // класс для �
     @Override
     public void addEpic(Epic epic) {
         epic.setId(++id);
-        epic.setStatus(String.valueOf(Statusvzhope.NEW));
+        epic.setStatus(String.valueOf(Status.NEW));
         epics.put(id, epic);
     }
 
@@ -156,7 +157,7 @@ public class InMemoryTaskManager implements TaskManager { // класс для �
         }
         subtasks.clear();
         for (Epic epic : epicsForStatusUpdate) {
-            epic.setStatus(String.valueOf(Statusvzhope.NEW));
+            epic.setStatus(String.valueOf(Status.NEW));
         }
     }
 
@@ -169,7 +170,7 @@ public class InMemoryTaskManager implements TaskManager { // класс для �
     private void checkEpicStatus(Epic epic) {
 
         if (epic.getEpicSubtasks().size() == 0) {
-            epic.setStatus(String.valueOf(Statusvzhope.NEW));
+            epic.setStatus(String.valueOf(Status.NEW));
             return;
         }
 
@@ -178,23 +179,22 @@ public class InMemoryTaskManager implements TaskManager { // класс для �
 
         for (Integer epicSubtaskId : epic.getEpicSubtasks()) {
             String status = subtasks.get(epicSubtaskId).getStatus();
-            if (!status.equals(Statusvzhope.NEW)) {
+            if (!status.equals(Status.NEW)) {
                 allTaskIsNew = false;
             }
-            if (!status.equals(Statusvzhope.DONE)) {
+            if (!status.equals(Status.DONE)) {
                 allTaskIsDone = false;
             }
         }
 
         if (allTaskIsDone) {
-            //epic.setStatus("DONE");
-            epic.setStatus(String.valueOf(Statusvzhope.DONE));
+            epic.setStatus(String.valueOf(Status.DONE));
         } else if (allTaskIsNew) {
             //epic.setStatus("NEW");
-            epic.setStatus(String.valueOf(Statusvzhope.NEW));
+            epic.setStatus(String.valueOf(Status.NEW));
         } else {
             //epic.setStatus("IN_PROGRESS");
-            epic.setStatus(String.valueOf(Statusvzhope.IN_PROGRESS));
+            epic.setStatus(String.valueOf(Status.IN_PROGRESS));
         }
 
     }
