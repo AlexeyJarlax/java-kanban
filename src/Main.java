@@ -1,10 +1,8 @@
-import tasks.Epic;
-import tasks.Subtask;
-import managers.Managers;
-import managers.TaskManager;
-import tasks.Status;
-import tasks.Task;
-import static managers.TaskManager.*;
+import managers.*;
+import tasks.*;
+
+import java.util.List;
+
 
 public class Main {
     public static void main(String[] args) {
@@ -32,17 +30,24 @@ public class Main {
         Epic epic2 = new Epic("Эпик №2", "ЯндексПрактикум");
         manager.addEpic(epic2);
 
-        System.out.println("\n Пересчет Эпиков : \n" + manager.getEpics(1));
-        System.out.println("\n Пересчет Задач : \n" +  manager.getTasks()); //5/ выводим на экран все виды задач
-        System.out.println("\n Пересчет Подзадач : \n" + manager.getSubtasks(1));
+        System.out.println("\n Пересчет всех Эпиков : \n" + manager.getEpics(1));
+        System.out.println("\n Пересчет всех Задач : \n" +  manager.getTasks()); //5/ выводим на экран все виды задач
+        System.out.println("\n Пересчет всех Подзадач : \n" + manager.getSubtasks(1));
+
+        //5/ запросить созданные задачи несколько раз в разном порядке
+        System.out.println("\n Запрос рандомной задачи : \n" + manager.getTask(1));
+        System.out.println("\n Запрос рандомной задачи : \n" + manager.getTask(2));
+        System.out.println("\n Запрос рандомной задачи : \n" + manager.getTask(1));
+        System.out.println("history = " + manager.history()); // не могу понять почему выходит пустым
 
         manager.deleteAllEpics();
-        manager.deleteAllTasks(); //5/ удаляем все задачи
+        manager.deleteAllTasks(); //5/ удаляем задачи
         manager.deleteAllSubtask();
 
         System.out.println("\n Итого Эпиков : \n" + manager.getEpics(1));
         System.out.println("\n Итого Задач : \n" +  manager.getTasks()); //5/ проверяем что осталось
         System.out.println("\n Итого Подзадач : \n" + manager.getSubtasks(1));
+        System.out.println("history = " + manager.history());
 
     }
 

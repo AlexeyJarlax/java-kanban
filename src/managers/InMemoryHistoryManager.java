@@ -1,6 +1,6 @@
 package managers;
 
-import tasks.Task;
+import tasks.*;
 
 import java.util.LinkedList;
 import java.util.List;
