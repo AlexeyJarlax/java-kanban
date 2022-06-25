@@ -55,6 +55,7 @@ public class InMemoryTaskManager implements TaskManager { // класс для �
     public void deleteTask(int id) {
         if (tasks.containsKey(id)) {
             tasks.remove(id);
+            historyManager.remove(id); //5/
         }
     }
 
@@ -95,8 +96,10 @@ public class InMemoryTaskManager implements TaskManager { // класс для �
         if (epics.containsKey(id)) {
             Epic epic = epics.get(id);
             epics.remove(id);
+            historyManager.remove(id); //5/
             for (Integer subtaskId : epic.getEpicSubtasks()) {
                 subtasks.remove(subtaskId);
+                historyManager.remove(subtaskId);  //5/
             }
             epic.setEpicSubtasks(new ArrayList<>());
         }
@@ -143,6 +146,7 @@ public class InMemoryTaskManager implements TaskManager { // класс для �
             epic.getEpicSubtasks().remove((Integer) id);
             checkEpicStatus(epic);
             subtasks.remove(id);
+            historyManager.remove(id); //5/
         }
     }
 

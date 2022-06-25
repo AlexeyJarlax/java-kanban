@@ -21,12 +21,14 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Эпик{" +
+        return " Эпик{" +
                 "№=" + id +
                 ", Название='" + title + '\'' +
                 ", Описание='" + description + '\'' +
                 ", Статус='" + status + '\'' +
-                '}';
+                '}' +
+                "\n";
+
     }
 
 
