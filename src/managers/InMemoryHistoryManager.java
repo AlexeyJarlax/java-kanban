@@ -4,40 +4,51 @@ import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private LinkedList<Node> taskHistory;
-    private HashMap<Integer, Node> receivedTasks;
-
-    public Node head;
-    public Node tail;
+    private HashMap<Integer, Node<Task>> receivedTasks;
+    private Node<Task> head;
+    private Node<Task> tail;
 
     public InMemoryHistoryManager() {
-        this.taskHistory = new LinkedList<>();
-
-        this.receivedTasks = new HashMap<>(); //5/
-
+        this.receivedTasks = new HashMap<>();
     }
 
-    public void linkLast(Task element) {  //5/ реализация двусвязного списка задач с методом linkLast
-        final Node oldTail = tail;
-        final Node newNode = new Node(oldTail, element, null);
-        tail = newNode;
-        receivedTasks.put(element.getId(), newNode);
-        if (oldTail == null) {
-            head = newNode;
-        } else {
-            oldTail.next = newNode;
+    @Override
+    public void add(Task task) {
+        if (!(task == null)) {
+            remove(task.getId());
+            linkLast(task);
         }
     }
 
-    public List<Task> getTasks() { //5/ реализация двусвязного списка задач с методом getTasks
+    @Override
+    public void remove(int id) {
+        removeNode(receivedTasks.get(id));
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return getTasks();
+    }
+
+    private void linkLast(Task element) {
+        final Node<Task> oldTail = tail;
+        final Node<Task> newNode = new Node<Task>(oldTail, element, null);
+        tail = newNode;
+        receivedTasks.put(element.getId(), newNode);
+        if (oldTail == null)
+            head = newNode;
+        else
+            oldTail.next = newNode;
+    }
+
+    private List<Task> getTasks() {
         List<Task> tasks = new ArrayList<>();
-        Node currentNode = head;
+        Node<Task> currentNode = head;
         while (!(currentNode == null)) {
             tasks.add(currentNode.data);
             currentNode = currentNode.next;
@@ -45,11 +56,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         return tasks;
     }
 
-    public void removeNode(Node node) {  //5/ метод void remove(int id) для удаления задачи из просмотра (принимает объект Node — узел связного списка и вырезает его)
+    private void removeNode(Node<Task> node) {
         if (!(node == null)) {
-            final Task data = node.data;
-            final Node next = node.next;
-            final Node prev = node.prev;
+            final Node<Task> next = node.next;
+            final Node<Task> prev = node.prev;
             node.data = null;
 
             if (head == node && tail == node) {
@@ -66,42 +76,19 @@ public class InMemoryHistoryManager implements HistoryManager {
                 next.prev = prev;
             }
 
-            node = null;
-
         }
-
-    }
-
-    @Override //5/
-    public void add(Task task) {
-        if (!(task == null)) {
-            remove(task.getId());
-            linkLast(task);
-        }
-    }
-
-    @Override  //5/
-    public void remove(int id) {
-        removeNode(receivedTasks.get(id));
-    }
-
-
-    @Override
-    public List<Task> getHistory() {
-        return getTasks();  //5/
     }
 }
 
-class Node { //5/ отдельный класс Node для узла списка
+class Node<Task> { // отдельный класс Node для узла списка
 
     public Task data;
-    public Node next;
-    public Node prev;
+    public Node<Task> next;
+    public Node<Task> prev;
 
-    public Node(Node prev, Task data, Node next) {
+    public Node(Node<Task> prev, Task data, Node<Task> next) {
         this.data = data;
         this.next = next;
         this.prev = prev;
     }
-
 }
