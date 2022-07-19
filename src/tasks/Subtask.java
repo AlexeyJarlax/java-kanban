@@ -1,23 +1,32 @@
 package tasks;
 
-public class Subtask extends Task {
-    private Epic id; // Реализация через ID
+import managers.TaskType;
 
-    public Subtask(String title, String description, String status) {
+public class Subtask extends Task {
+    private Epic epic;
+
+    public Subtask(String title, String description, Status status) {
         super(title, description, status);
     }
 
-    public Subtask(String title, String description, String status, Epic id) {
+    public Subtask(String title, String description, Status status, Epic epic) {
         super(title, description, status);
-        this.id = id;
+        this.epic = epic;
+        this.taskType = TaskType.SUBTASK;
+    }
+
+    public Subtask(int id, String title, String description, Status status, Epic epic) {
+        super(id, title, description, status);
+        this.epic = epic;
+        this.taskType = TaskType.SUBTASK;
     }
 
     public Epic getEpic() {
-        return id;
+        return epic;
     }
 
-    public void setEpic(Epic id) {
-        this.id = id;
+    public void setEpic(Epic epic) {
+        this.epic = epic;
     }
 
     @Override
@@ -28,5 +37,10 @@ public class Subtask extends Task {
                 ", Описание='" + description + '\'' +
                 ", Статус='" + status + '\'' +
                 '}';
+    }
+
+    @Override
+    public String toStringFromFile() {
+        return String.format("%s,%s,%s,%s,%s,%s", id, taskType, title, status, description, epic.getId());
     }
 }
