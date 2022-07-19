@@ -1,14 +1,15 @@
 package managers;
 
-import tasks.*;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.HashMap;
 import java.util.List;
 
 public interface TaskManager {
 
-    //задачи
-    Task addTask(Task task);
+    void addTask(Task task);
 
     void updateTask(Task task);
 
@@ -20,27 +21,25 @@ public interface TaskManager {
 
     void deleteAllTasks();
 
-    //эпики
     void addEpic(Epic epic);
 
     void updateEpic(Epic epic);
 
     Epic getEpic(int id);
 
-    HashMap<Integer, Epic> getEpics(int i);
+    HashMap<Integer, Epic> getEpics();
 
     void deleteEpic(int id);
 
     void deleteAllEpics();
 
-    //подзадачи
     void addSubtask(Subtask subtask);
 
     void updateSubtask(Subtask subtask);
 
     Subtask getSubtask(int id);
 
-    HashMap<Integer, Subtask> getSubtasks(int i);
+    HashMap<Integer, Subtask> getSubtasks();
 
     void deleteSubtask(int id);
 
