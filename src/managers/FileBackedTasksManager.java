@@ -1,4 +1,3 @@
-
 package managers;
 
 import tasks.Epic;
@@ -52,6 +51,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
         String lineOfHistory = "";
         boolean isTitle = true;
         boolean itsTask = true;
+        int maxId = 0;
         for (String line : lines) {
             if (isTitle) {
                 isTitle = false;
@@ -65,46 +65,37 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
                 TaskType taskType = TaskType.valueOf(line.split(",")[1]);
                 switch (taskType) {
                     case EPIC:
-                        epics.add(line);
+                        Epic epic = (Epic) fromString(epicLine, TaskType.EPIC, fileBackedTasksManager);
+           	 	int id = epic.getId();
+           	 	if (id > maxId) {
+            	 	   maxId = id;
+           		 }
+            		fileBackedTasksManager.epics.put(id, epic);
                         break;
                     case SUBTASK:
-                        subtasks.add(line);
+                          Subtask subtask = (Subtask) fromString(subtaskLine, TaskType.SUBTASK, fileBackedTasksManager);
+           		 int id = subtask.getId();
+           		 if (id > maxId) {
+               	 	maxId = id;
+            		}
+            		fileBackedTasksManager.subtasks.put(id, subtask);
+            		subtask.getEpic().getEpicSubtasks().add(id);
                         break;
                     case TASK:
-                        tasks.add(line);
+                        Task task = fromString(taskLine, TaskType.TASK, fileBackedTasksManager);
+            		int id = task.getId();
+           		 if (id > maxId) {
+             		   maxId = id;
+           		 }
+           		fileBackedTasksManager.tasks.put(id, task);
+       			 }
                         break;
                 }
             } else {
                 lineOfHistory = line;
             }
         }
-
-        int maxId = 0;
-        for (String epicLine : epics) {
-            Epic epic = (Epic) fromString(epicLine, TaskType.EPIC, fileBackedTasksManager);
-            int id = epic.getId();
-            if (id > maxId) {
-                maxId = id;
-            }
-            fileBackedTasksManager.epics.put(id, epic);
-        }
-        for (String subtaskLine : subtasks) {
-            Subtask subtask = (Subtask) fromString(subtaskLine, TaskType.SUBTASK, fileBackedTasksManager);
-            int id = subtask.getId();
-            if (id > maxId) {
-                maxId = id;
-            }
-            fileBackedTasksManager.subtasks.put(id, subtask);
-            subtask.getEpic().getEpicSubtasks().add(id);
-        }
-        for (String taskLine : tasks) {
-            Task task = fromString(taskLine, TaskType.TASK, fileBackedTasksManager);
-            int id = task.getId();
-            if (id > maxId) {
-                maxId = id;
-            }
-            fileBackedTasksManager.tasks.put(id, task);
-        }
+ 
         fileBackedTasksManager.id = maxId;
         List<Integer> ids = fromString(lineOfHistory);
         for (Integer taskId : ids) {
