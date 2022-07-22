@@ -11,3 +11,7 @@ U
 %src/managers/InMemoryTaskManager.java,2\b\2bbb42d11d5bd3bec77f32049398400c34770d1a
 E
 src/tasks/Status.java,7\f\7fcf27d81cd8469d653ba45f3ed87052c6ff1fb1
+J
+src/managers/Managers.java,2\1\21a45862de69fc2804a7a028677c4050a1cefc48
+=
+data/data.csv,6\1\618f36ca47394082b205481ee4d1da9dcdc32193
