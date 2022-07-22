@@ -1,10 +1,7 @@
-
 package managers;
 
-import tasks.Epic;
-import tasks.Status;
-import tasks.Subtask;
-import tasks.Task;
+import exceptions.*;
+import tasks.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -30,7 +27,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
             try {
                 Path path = Files.createFile(Paths.get(fileName));
             } catch (IOException e) {
-                System.out.println("Ошибка создания файла.");
+                throw new ManagerCreateException("Ошибка создания файла.");
             }
     }
 
@@ -52,6 +49,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
         String lineOfHistory = "";
         boolean isTitle = true;
         boolean itsTask = true;
+        int maxId = 0;
+        int id;
+
         for (String line : lines) {
             if (isTitle) {
                 isTitle = false;
@@ -65,22 +65,42 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
                 TaskType taskType = TaskType.valueOf(line.split(",")[1]);
                 switch (taskType) {
                     case EPIC:
-                        epics.add(line);
+                        Epic epic = (Epic) fromString(line, TaskType.EPIC, fileBackedTasksManager);
+                        id = epic.getId();
+                        if (id > maxId) {
+                            maxId = id;
+                        }
+                        fileBackedTasksManager.epics.put(id, epic);
+                        //epics.add(line);
                         break;
+
                     case SUBTASK:
-                        subtasks.add(line);
+                        Subtask subtask = (Subtask) fromString(line, TaskType.SUBTASK, fileBackedTasksManager);
+                        id = subtask.getId();
+                        if (id > maxId) {
+                            maxId = id;
+                        }
+                        fileBackedTasksManager.subtasks.put(id, subtask);
+                        //subtasks.add(line);
                         break;
+
                     case TASK:
-                        tasks.add(line);
+                        Task task = fromString(line, TaskType.TASK, fileBackedTasksManager);
+                        id = task.getId();
+                        if (id > maxId) {
+                            maxId = id;
+                        }
+                        fileBackedTasksManager.tasks.put(id, task);
+                        //tasks.add(line);
                         break;
+
                 }
             } else {
                 lineOfHistory = line;
             }
         }
 
-        int maxId = 0;
-        for (String epicLine : epics) {
+ /*       for (String epicLine : epics) {
             Epic epic = (Epic) fromString(epicLine, TaskType.EPIC, fileBackedTasksManager);
             int id = epic.getId();
             if (id > maxId) {
@@ -95,7 +115,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
                 maxId = id;
             }
             fileBackedTasksManager.subtasks.put(id, subtask);
-            subtask.getEpic().getEpicSubtasks().add(id);
+
         }
         for (String taskLine : tasks) {
             Task task = fromString(taskLine, TaskType.TASK, fileBackedTasksManager);
@@ -105,6 +125,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
             }
             fileBackedTasksManager.tasks.put(id, task);
         }
+ */
         fileBackedTasksManager.id = maxId;
         List<Integer> ids = fromString(lineOfHistory);
         for (Integer taskId : ids) {
@@ -158,10 +179,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
         switch (taskType) {
             case TASK:
                 return new Task(id, name, description, status);
-            case SUBTASK:
-                return new Subtask(id, name, description, status, fileBackedTasksManager.epics.get(Integer.valueOf(epicIdString)));
             case EPIC:
                 return new Epic(id, name, status, description);
+            case SUBTASK:
+                return new Subtask(id, name, description, status, fileBackedTasksManager.epics.get(Integer.valueOf(epicIdString)));
             default:
                 return null;
         }
@@ -176,18 +197,22 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
         try (Writer writer = new FileWriter(file)) {
             writer.write("id,type,name,status,description,epic\n");
             HashMap<Integer, String> allTasks = new HashMap<>();
+
             HashMap<Integer, Task> tasks = super.getTasks();
             for (Integer id : tasks.keySet()) {
                 allTasks.put(id, tasks.get(id).toStringFromFile());
             }
-            HashMap<Integer, Subtask> subtasks = super.getSubtasks();
-            for (Integer id : subtasks.keySet()) {
-                allTasks.put(id, subtasks.get(id).toStringFromFile());
-            }
+
             HashMap<Integer, Epic> epics = super.getEpics();
             for (Integer id : epics.keySet()) {
                 allTasks.put(id, epics.get(id).toStringFromFile());
             }
+
+            HashMap<Integer, Subtask> subtasks = super.getSubtasks();
+            for (Integer id : subtasks.keySet()) {
+                allTasks.put(id, subtasks.get(id).toStringFromFile());
+            }
+
             for (String value : allTasks.values()) {
                 writer.write(String.format("%s\n", value));
             }
