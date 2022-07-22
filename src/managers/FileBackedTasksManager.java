@@ -86,6 +86,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
 
                     case TASK:
                         Task task = fromString(line, TaskType.TASK, fileBackedTasksManager);
+
                         id = task.getId();
                         if (id > maxId) {
                             maxId = id;
@@ -124,8 +125,8 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
                 maxId = id;
             }
             fileBackedTasksManager.tasks.put(id, task);
-        }
  */
+
         fileBackedTasksManager.id = maxId;
         List<Integer> ids = fromString(lineOfHistory);
         for (Integer taskId : ids) {
@@ -318,4 +319,6 @@ public class FileBackedTasksManager extends InMemoryTaskManager { //6/ клас�
         super.deleteAllSubtask();
         save();
     }
+
 }
+
